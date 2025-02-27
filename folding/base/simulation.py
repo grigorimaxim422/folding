@@ -5,11 +5,40 @@ import functools
 import openmm as mm
 from openmm import app
 from openmm import unit
-
+import torch
 
 from folding.utils.opemm_simulation_config import SimulationConfig
 from folding.utils.logger import logger
 
+import torch
+
+def get_idle_gpus(threshold=0.05):
+    """
+    Checks GPU memory usage to estimate idle GPUs.
+    
+    Args:
+        threshold (float): Fraction of total memory usage below which GPU is considered idle.
+    
+    Returns:
+        List[int]: List of idle GPU indices.
+    """
+    idle_gpus = []
+    num_gpus = torch.cuda.device_count()
+    
+    for i in range(num_gpus):
+        torch.cuda.set_device(i)
+        total_memory = torch.cuda.get_device_properties(i).total_memory
+        used_memory = torch.cuda.memory_allocated(i)
+        
+        if (used_memory / total_memory) < threshold:
+            idle_gpus.append(i)
+    
+    return idle_gpus
+
+print("Idle GPUs:", get_idle_gpus())
+
+def first_number(arr):
+    return arr[0] if arr else 0
 
 class GenericSimulation(ABC):
     def __init__(self):
@@ -124,11 +153,17 @@ class OpenMMSimulation(GenericSimulation):
         platform = mm.Platform.getPlatformByName("CUDA")
 
         # Reference for DisablePmeStream: https://github.com/openmm/openmm/issues/3589
+        deviceIndex = first_number(get_idle_gpus())
+        
         properties = {
             "DeterministicForces": "true",
             "Precision": "double",
             "DisablePmeStream": "true",
+            "CudaPrecision":"mixed",
+            # "DeviceIndex":"0,1"
         }
+        properties['DeviceIndex'] = f"{deviceIndex}"
+        properties['CudaDeviceIndex'] = f"{deviceIndex}"
 
         start_time = time.time()
         simulation = mm.app.Simulation(
