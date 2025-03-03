@@ -168,7 +168,8 @@ class OpenMMSimulation(GenericSimulation):
         properties = {
             # "DeterministicForces": "true",
             "Precision": "mixed",
-            # "DisablePmeStream": "true",
+            "UseCpuPme":"true",
+            "DisablePmeStream": "false",
             "CudaPrecision":"mixed",
             "DeviceIndex":"0",
             "CudaDeviceIndex":"0"

@@ -5,7 +5,7 @@ python3 -m neurons.miner \
     --netuid 25 \
     --subtensor.network finney \
     --wallet.name seinhub \
-    --wallet.hotkey seinhub03 \
+    --wallet.hotkey seinhub02 \
     --neuron.max_workers 128 \
-    --axon.port 29072
+    --axon.port 32430
 
