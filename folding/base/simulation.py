@@ -160,7 +160,8 @@ class OpenMMSimulation(GenericSimulation):
             deviceIndex = static_id
             static_id = static_id + 1
             static_id = static_id % 4
-        
+            
+        logging.info(f"Picked {deviceIndex}...")
         properties = {
             "DeterministicForces": "true",
             "Precision": "double",
