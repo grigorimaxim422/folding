@@ -38,7 +38,7 @@ def get_idle_gpus(threshold=0.05):
 print("Idle GPUs:", get_idle_gpus())
 
 def first_number(arr):
-    return arr[0] if arr else 0
+    return arr[0] if arr else -1
 
 class GenericSimulation(ABC):
     def __init__(self):
@@ -64,6 +64,8 @@ class GenericSimulation(ABC):
 
 
 class OpenMMSimulation(GenericSimulation):
+    static_id = 0
+    
     @GenericSimulation.timeit
     def create_simulation(
         self, pdb: app.PDBFile, system_config: dict, seed: int = None, verbose=False
@@ -153,7 +155,11 @@ class OpenMMSimulation(GenericSimulation):
         platform = mm.Platform.getPlatformByName("CUDA")
 
         # Reference for DisablePmeStream: https://github.com/openmm/openmm/issues/3589
-        deviceIndex = first_number(get_idle_gpus())
+        deviceIndex = first_number(get_idle_gpus())        
+        if deviceIndex == -1:
+            deviceIndex = static_id
+            static_id = static_id + 1
+            static_id = static_id % 4
         
         properties = {
             "DeterministicForces": "true",
