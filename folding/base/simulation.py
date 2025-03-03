@@ -158,13 +158,13 @@ class OpenMMSimulation(GenericSimulation):
         # Reference for DisablePmeStream: https://github.com/openmm/openmm/issues/3589
         # deviceIndex = first_number(get_idle_gpus())        
         # if deviceIndex == -1:
-        deviceIndex = static_id
-        static_id = static_id + 1
-        static_id = static_id % 8
+        deviceIndex = OpenMMSimulation.static_id
+        OpenMMSimulation.static_id = OpenMMSimulation.static_id + 1
+        OpenMMSimulation.static_id = OpenMMSimulation.static_id % 8
         
-        os.environ["CUDA_VISIBLE_DEVICES"] = str(static_id)  # Assign specific GPU
+        os.environ["CUDA_VISIBLE_DEVICES"] = str(OpenMMSimulation.static_id)  # Assign specific GPU
             
-        logging.info(f"Picked {static_id}...")
+        logging.info(f"Picked {OpenMMSimulation.static_id}...")
         properties = {
             # "DeterministicForces": "true",
             "Precision": "mixed",

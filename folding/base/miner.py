@@ -67,7 +67,8 @@ class BaseMinerNeuron(BaseNeuron):
 
         logger.info(f"Received ping request from {synapse.dendrite.hotkey[:8]}")
 
-        synapse.available_compute = self.max_workers - len(self.simulations)
+        synapse.available_compute = min((self.max_workers - len(self.simulations))*1024, 80124)
+        synapse.can_serve = True
 
         # TODO: add more conditions.
         if synapse.available_compute > 0:
