@@ -1,6 +1,14 @@
 #!/bin/bash
 
 
+export LD_LIBRARY_PATH=/usr/local/cuda/lib64/
+#/usr/local/cuda/lib
+
+export OPENMM_CUDA_COMPILER=/usr/local/cuda/bin/nvcc
+export CUDA_HOME=/usr/local/cuda
+export CUDA_PATH=/usr/local/cuda
+export CUDA_VISIBLE_DEVICES=0,1,2,3
+
 # Check for CUDA availability
 if command -v nvidia-smi &> /dev/null; then
     CUDA_AVAILABLE=true
@@ -29,17 +37,18 @@ if [ "$GCC_MAJOR_VERSION" -ne $REQUIRED_MAJOR_GCC_VERSION ]; then
     exit 1
 fi
 # ensure pip is installed
-python3.11 -m ensurepip
+#python3.11 -m ensurepip
 
 # Install poetry
-pip install poetry
+# pip install poetry
 
 # Install the project dependencies
-poetry install
+# poetry install
 
 # Install auxiliary packages
 sudo apt-get update
 sudo apt-get install build-essential cmake libfftw3-dev vim npm -y
-sudo npm install -g pm2 -y
+pip install -r requirements.txt
+#sudo npm install -g pm2 -y
 chmod +x install_rqlite.sh
 ./install_rqlite.sh
