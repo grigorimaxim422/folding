@@ -159,11 +159,11 @@ class OpenMMSimulation(GenericSimulation):
         # if deviceIndex == -1:
         deviceIndex = static_id
         static_id = static_id + 1
-        static_id = static_id % 1
+        static_id = static_id % 8
         
-        os.environ["CUDA_VISIBLE_DEVICES"] = str(gpu_id)  # Assign specific GPU
+        os.environ["CUDA_VISIBLE_DEVICES"] = str(static_id)  # Assign specific GPU
             
-        logging.info(f"Picked {deviceIndex}...")
+        logging.info(f"Picked {static_id}...")
         properties = {
             # "DeterministicForces": "true",
             "Precision": "mixed",
