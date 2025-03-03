@@ -7,6 +7,17 @@ import time
 from sys import stdout
 import os
 
+logging.basicConfig(level=logging.DEBUG)
+
+class TimestampedReporter(StateDataReporter):
+    def __init__(self, file=stdout, reportInterval=1000, step=True, potentialEnergy=True, temperature=True, volume=True):
+        super().__init__(file, reportInterval, step=step, potentialEnergy=potentialEnergy, temperature=temperature, volume=volume)
+    
+    def report(self, simulation, state):
+        timestamp = time.strftime("%H:%M:%S")
+        print(f"{timestamp} - Step: {simulation.currentStep}, Energy: {state.getPotentialEnergy()}")
+        super().report(simulation, state)
+        
 def get_idle_gpus(threshold=0.05):
     """
     Checks GPU memory usage to estimate idle GPUs.
@@ -38,8 +49,10 @@ def first_number(arr):
 
 
 def run_simulation(gpu_id):
+    
     """Runs an OpenMM simulation on the specified GPU."""
     os.environ["CUDA_VISIBLE_DEVICES"] = str(gpu_id)  # Assign specific GPU
+    logging.info(f"Running simulation on cuda:{gpu_id}...")
     
     pdb = PDBFile("1AKI.pdb")
     forcefield = ForceField('amber14-all.xml', 'amber14/tip3pfb.xml')
@@ -64,9 +77,9 @@ def run_simulation(gpu_id):
     # logging.info(f"Picked {deviceIndex}...")
     properties = {
         # "DeterministicForces": "true",
-        "Precision": "single",
+        "Precision": "mixed",
         # "DisablePmeStream": "true",
-        "CudaPrecision":"single",
+        "CudaPrecision":"mixed",
         "DeviceIndex":"0",
         "CudaDeviceIndex":"0"
     }
@@ -81,22 +94,21 @@ def run_simulation(gpu_id):
     print("Minimizing energy")
     simulation.minimizeEnergy()
 
-
-    simulation.reporters.append(PDBReporter('output.pdb', 1000))
-    simulation.reporters.append(StateDataReporter(stdout, 1000, step=True,
+    simulation.reporters.append(PDBReporter('output.pdb', 10000))
+    simulation.reporters.append(TimestampedReporter(stdout, 10000, step=True,
             potentialEnergy=True, temperature=True, volume=True))
-    simulation.reporters.append(StateDataReporter("md_log.txt", 100, step=True,
+    simulation.reporters.append(StateDataReporter("md_log.txt", 1000, step=True,
             potentialEnergy=True, temperature=True, volume=True))
 
     print("Running NVT")
-    simulation.step(100000)
+    simulation.step(1000000)
 
     system.addForce(MonteCarloBarostat(1*bar, 300*kelvin))
     simulation.context.reinitialize(preserveState=True)
 
 
     print("Running NPT")
-    simulation.step(100000)
+    simulation.step(1000000)
     
 
 import time
@@ -107,3 +119,4 @@ if __name__ == "__main__":
     for i in [0,1]:
         process1 = multiprocessing.Process(target=run_simulation, args=(i,))
         process1.start()
+        time.sleep(3)

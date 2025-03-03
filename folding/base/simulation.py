@@ -155,22 +155,25 @@ class OpenMMSimulation(GenericSimulation):
         platform = mm.Platform.getPlatformByName("CUDA")
 
         # Reference for DisablePmeStream: https://github.com/openmm/openmm/issues/3589
-        deviceIndex = first_number(get_idle_gpus())        
-        if deviceIndex == -1:
-            deviceIndex = static_id
-            static_id = static_id + 1
-            static_id = static_id % 4
+        # deviceIndex = first_number(get_idle_gpus())        
+        # if deviceIndex == -1:
+        deviceIndex = static_id
+        static_id = static_id + 1
+        static_id = static_id % 4
+        
+        os.environ["CUDA_VISIBLE_DEVICES"] = str(gpu_id)  # Assign specific GPU
             
         logging.info(f"Picked {deviceIndex}...")
         properties = {
-            "DeterministicForces": "true",
-            "Precision": "double",
-            "DisablePmeStream": "true",
+            # "DeterministicForces": "true",
+            "Precision": "mixed",
+            # "DisablePmeStream": "true",
             "CudaPrecision":"mixed",
-            # "DeviceIndex":"0,1"
+            "DeviceIndex":"0",
+            "CudaDeviceIndex":"0"
         }
-        properties['DeviceIndex'] = f"{deviceIndex}"
-        properties['CudaDeviceIndex'] = f"{deviceIndex}"
+        # properties['DeviceIndex'] = f"{deviceIndex}"
+        # properties['CudaDeviceIndex'] = f"{deviceIndex}"
 
         start_time = time.time()
         simulation = mm.app.Simulation(
