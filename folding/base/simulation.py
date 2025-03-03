@@ -35,7 +35,7 @@ def get_idle_gpus(threshold=0.05):
     
     return idle_gpus
 
-print("Idle GPUs:", get_idle_gpus())
+#print("Idle GPUs:", get_idle_gpus())
 
 def first_number(arr):
     return arr[0] if arr else -1
