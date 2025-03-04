@@ -7,5 +7,5 @@ python3 -m neurons.miner \
     --wallet.name seinhub \
     --wallet.hotkey seinhub03 \
     --neuron.max_workers 512 \
-    --axon.port 34841
+    --axon.port 41197
 

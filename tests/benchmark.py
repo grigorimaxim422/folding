@@ -94,7 +94,7 @@ def printTestResult(test_result, options):
                test_result['platform'],
                test_result['ns_per_day']))
     else:
-        raise ValueError(f"style '{style}' must be one of ['simple', 'table']")
+        raise ValueError(f"style '{options.style}' must be one of ['simple', 'table']")
 
 def timeIntegration(context, steps, initialSteps):
     """Integrate a Context for a specified number of steps, then return how many seconds it took."""
@@ -355,9 +355,10 @@ def runOneTest(testName, options):
     }
     initialSteps = 5
     platform = mm.Platform.getPlatform(options.platform)
-    os.environ["CUDA_VISIBLE_DEVICES"] = "2,3"
+    # os.environ["CUDA_VISIBLE_DEVICES"] = "2,3"
     if options.device is not None and 'DeviceIndex' in platform.getPropertyNames():
         properties['DeviceIndex'] = options.device
+        properties['CudaDeviceIndex'] = options.device
         if ',' in options.device or ' ' in options.device:
             initialSteps = 250
     if options.disable_pme_stream:

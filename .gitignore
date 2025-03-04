@@ -5,7 +5,7 @@ __pycache__/
 
 # C extensions
 *.so
-*.pdb
+# *.pdb
 *.gz
 # Distribution / packaging
 .Python
@@ -67,7 +67,7 @@ cover/
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
-miner-data/
+# miner-data/
 # Flask stuff:
 instance/
 .webassets-cache

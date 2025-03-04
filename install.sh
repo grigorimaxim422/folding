@@ -49,6 +49,6 @@ fi
 sudo apt-get update
 sudo apt-get install build-essential cmake libfftw3-dev vim npm -y
 pip install -r requirements.txt
-#sudo npm install -g pm2 -y
+# sudo npm install -g pm2 -y
 chmod +x install_rqlite.sh
 ./install_rqlite.sh
