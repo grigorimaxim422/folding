@@ -347,7 +347,7 @@ def runOneTest(testName, options):
     test_result['timestep_in_fs'] = dt.value_in_unit(unit.femtoseconds)
     properties = {
         "Precision": "mixed",
-        "UseCpuPme":"true",
+        # "UseCpuPme":"true",
         # "DisablePmeStream": "false",
         "CudaPrecision":"mixed",
         "DeviceIndex":"0,1",
@@ -355,7 +355,7 @@ def runOneTest(testName, options):
     }
     initialSteps = 5
     platform = mm.Platform.getPlatform(options.platform)
-    os.environ["CUDA_VISIBLE_DEVICES"] = "0,1"
+    os.environ["CUDA_VISIBLE_DEVICES"] = "2,3"
     if options.device is not None and 'DeviceIndex' in platform.getPropertyNames():
         properties['DeviceIndex'] = options.device
         if ',' in options.device or ' ' in options.device:

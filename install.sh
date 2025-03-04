@@ -1,5 +1,5 @@
 #!/bin/bash
-
+wget https://files.rcsb.org/download/1AKI.pdb
 
 export LD_LIBRARY_PATH=/usr/local/cuda/lib64/
 #/usr/local/cuda/lib
@@ -7,7 +7,7 @@ export LD_LIBRARY_PATH=/usr/local/cuda/lib64/
 export OPENMM_CUDA_COMPILER=/usr/local/cuda/bin/nvcc
 export CUDA_HOME=/usr/local/cuda
 export CUDA_PATH=/usr/local/cuda
-export CUDA_VISIBLE_DEVICES=0,1,2,3
+export CUDA_VISIBLE_DEVICES=0,1
 
 # Check for CUDA availability
 if command -v nvidia-smi &> /dev/null; then
