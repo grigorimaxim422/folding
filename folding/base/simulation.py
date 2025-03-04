@@ -162,7 +162,8 @@ class OpenMMSimulation(GenericSimulation):
         OpenMMSimulation.static_id = OpenMMSimulation.static_id + 1
         OpenMMSimulation.static_id = OpenMMSimulation.static_id % 2
         
-        os.environ["CUDA_VISIBLE_DEVICES"] = str(OpenMMSimulation.static_id)  # Assign specific GPU
+        # os.environ["CUDA_VISIBLE_DEVICES"] = str(OpenMMSimulation.static_id)  # Assign specific GPU
+        os.environ["CUDA_VISIBLE_DEVICES"] = "0,1,2,3"
             
         logging.info(f"Picked {OpenMMSimulation.static_id}...")
         properties = {
@@ -171,8 +172,8 @@ class OpenMMSimulation(GenericSimulation):
             "UseCpuPme":"true",
             # "DisablePmeStream": "false",
             "CudaPrecision":"mixed",
-            "DeviceIndex":"0",
-            "CudaDeviceIndex":"0"
+            "DeviceIndex":"0,1,2,3",
+            "CudaDeviceIndex":"0,1,2,3"
         }
         # properties['DeviceIndex'] = f"{deviceIndex}"
         # properties['CudaDeviceIndex'] = f"{deviceIndex}"
